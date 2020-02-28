@@ -1,5 +1,3 @@
-
-
 /// if T data is List then K is the subtype
 class ApiResponse<T, K> {
   bool success;
