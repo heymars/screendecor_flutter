@@ -7,8 +7,8 @@ import 'api_response.dart';
 import 'app_exceptions.dart';
 
 class ApiClient {
-  final String _baseUrl = "http://52.65.173.187/v1/";
-  final String _host = "http://52.65.173.187";
+  final String _baseUrl = "";
+  final String _host = "";
   static const String requestOtp = "auth/requestotp";
   static const String verifyOtp = "auth/varifyotp";
   static const String register = "auth/register";
