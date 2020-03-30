@@ -2,45 +2,41 @@ class PhotoModel {
   String id;
   String createdAt;
   String updatedAt;
-  Null promotedAt;
+//  Null promotedAt;
   int width;
   int height;
   String color;
-  Null description;
+  String description;
   String altDescription;
   Urls urls;
   Links links;
-  List<Null> categories;
   int likes;
   bool likedByUser;
-  List<Null> currentUserCollections;
   User user;
   Sponsorship sponsorship;
 
   PhotoModel(
       {this.id,
-        this.createdAt,
-        this.updatedAt,
-        this.promotedAt,
-        this.width,
-        this.height,
-        this.color,
-        this.description,
-        this.altDescription,
-        this.urls,
-        this.links,
-        this.categories,
-        this.likes,
-        this.likedByUser,
-        this.currentUserCollections,
-        this.user,
-        this.sponsorship});
+      this.createdAt,
+      this.updatedAt,
+//      this.promotedAt,
+      this.width,
+      this.height,
+      this.color,
+      this.description,
+      this.altDescription,
+      this.urls,
+      this.links,
+      this.likes,
+      this.likedByUser,
+      this.user,
+      this.sponsorship});
 
   PhotoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    promotedAt = json['promoted_at'];
+//    promotedAt = json['promoted_at'];
     width = json['width'];
     height = json['height'];
     color = json['color'];
@@ -48,20 +44,8 @@ class PhotoModel {
     altDescription = json['alt_description'];
     urls = json['urls'] != null ? new Urls.fromJson(json['urls']) : null;
     links = json['links'] != null ? new Links.fromJson(json['links']) : null;
-    if (json['categories'] != null) {
-      categories = new List<Null>();
-      json['categories'].forEach((v) {
-        categories.add(new Null.fromJson(v));
-      });
-    }
     likes = json['likes'];
     likedByUser = json['liked_by_user'];
-    if (json['current_user_collections'] != null) {
-      currentUserCollections = new List<Null>();
-      json['current_user_collections'].forEach((v) {
-        currentUserCollections.add(new Null.fromJson(v));
-      });
-    }
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     sponsorship = json['sponsorship'] != null
         ? new Sponsorship.fromJson(json['sponsorship'])
@@ -73,7 +57,7 @@ class PhotoModel {
     data['id'] = this.id;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    data['promoted_at'] = this.promotedAt;
+//    data['promoted_at'] = this.promotedAt;
     data['width'] = this.width;
     data['height'] = this.height;
     data['color'] = this.color;
@@ -85,15 +69,8 @@ class PhotoModel {
     if (this.links != null) {
       data['links'] = this.links.toJson();
     }
-    if (this.categories != null) {
-      data['categories'] = this.categories.map((v) => v.toJson()).toList();
-    }
     data['likes'] = this.likes;
     data['liked_by_user'] = this.likedByUser;
-    if (this.currentUserCollections != null) {
-      data['current_user_collections'] =
-          this.currentUserCollections.map((v) => v.toJson()).toList();
-    }
     if (this.user != null) {
       data['user'] = this.user.toJson();
     }
@@ -163,12 +140,12 @@ class User {
   String username;
   String name;
   String firstName;
-  Null lastName;
+//  Null lastName;
   String twitterUsername;
   String portfolioUrl;
   String bio;
-  Null location;
-  Links links;
+//  Null location;
+  UserLinks links;
   ProfileImage profileImage;
   String instagramUsername;
   int totalCollections;
@@ -178,22 +155,22 @@ class User {
 
   User(
       {this.id,
-        this.updatedAt,
-        this.username,
-        this.name,
-        this.firstName,
-        this.lastName,
-        this.twitterUsername,
-        this.portfolioUrl,
-        this.bio,
-        this.location,
-        this.links,
-        this.profileImage,
-        this.instagramUsername,
-        this.totalCollections,
-        this.totalLikes,
-        this.totalPhotos,
-        this.acceptedTos});
+      this.updatedAt,
+      this.username,
+      this.name,
+      this.firstName,
+//      this.lastName,
+      this.twitterUsername,
+      this.portfolioUrl,
+      this.bio,
+//      this.location,
+      this.links,
+      this.profileImage,
+      this.instagramUsername,
+      this.totalCollections,
+      this.totalLikes,
+      this.totalPhotos,
+      this.acceptedTos});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -201,12 +178,13 @@ class User {
     username = json['username'];
     name = json['name'];
     firstName = json['first_name'];
-    lastName = json['last_name'];
+//    lastName = json['last_name'];
     twitterUsername = json['twitter_username'];
     portfolioUrl = json['portfolio_url'];
     bio = json['bio'];
-    location = json['location'];
-    links = json['links'] != null ? new Links.fromJson(json['links']) : null;
+//    location = json['location'];
+    links =
+        json['links'] != null ? new UserLinks.fromJson(json['links']) : null;
     profileImage = json['profile_image'] != null
         ? new ProfileImage.fromJson(json['profile_image'])
         : null;
@@ -224,11 +202,11 @@ class User {
     data['username'] = this.username;
     data['name'] = this.name;
     data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
+//    data['last_name'] = this.lastName;
     data['twitter_username'] = this.twitterUsername;
     data['portfolio_url'] = this.portfolioUrl;
     data['bio'] = this.bio;
-    data['location'] = this.location;
+//    data['location'] = this.location;
     if (this.links != null) {
       data['links'] = this.links.toJson();
     }
@@ -244,7 +222,7 @@ class User {
   }
 }
 
-class Links {
+class UserLinks {
   String self;
   String html;
   String photos;
@@ -253,16 +231,16 @@ class Links {
   String following;
   String followers;
 
-  Links(
+  UserLinks(
       {this.self,
-        this.html,
-        this.photos,
-        this.likes,
-        this.portfolio,
-        this.following,
-        this.followers});
+      this.html,
+      this.photos,
+      this.likes,
+      this.portfolio,
+      this.following,
+      this.followers});
 
-  Links.fromJson(Map<String, dynamic> json) {
+  UserLinks.fromJson(Map<String, dynamic> json) {
     self = json['self'];
     html = json['html'];
     photos = json['photos'];
@@ -318,7 +296,7 @@ class Sponsorship {
     impressionUrls = json['impression_urls'].cast<String>();
     tagline = json['tagline'];
     sponsor =
-    json['sponsor'] != null ? new User.fromJson(json['sponsor']) : null;
+        json['sponsor'] != null ? new User.fromJson(json['sponsor']) : null;
   }
 
   Map<String, dynamic> toJson() {

@@ -2,40 +2,27 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:screen_decor/common/constants.dart';
 import 'package:screen_decor/utils/shared_preference_helper.dart';
+
 import 'api_response.dart';
 import 'app_exceptions.dart';
 
 class ApiClient {
-  final String _baseUrl = "";
-  final String _host = "";
-  static const String requestOtp = "auth/requestotp";
-  static const String verifyOtp = "auth/varifyotp";
-  static const String register = "auth/register";
-  static const String getCategories = "category/";
-  static const String getProductList = "product/";
-  static const String addToCart = "cart/";
-  static const String getCartList = "cart/";
-  static const String addOutlet = "outlet/";
-  static const String getCuisines = "outlet/cuisines";
-  static const String placeOrder = "order/";
-  static const String submitPayment = "/order/payment";
-  static const String cafeProfile = "profile/";
-  static const String updateBusinessProfile = "profile/";
-  static const String getOrderHistory = "order/";
+  static const String getPhotos = "/photos";
 
-  Future<T> get<T, K>(String url, String path, {dynamic queryParams}) async {
-    print('Api Get, url ${_baseUrl + url}');
+  Future<T> get<T, K>(String url, {dynamic queryParams}) async {
+    print('Api Get, url ${Constants.BASE_API_URL + url}');
     var responseJson;
     try {
-      String token = await SharedPreferencesHelper.getAccessToken();
+      String token = Constants.ACCESS_KEY;
       Map<String, String> headers = new Map();
       headers.addAll({"Content-Type": "application/x-www-form-urlencoded"});
       if (token != null) {
-        headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+        headers = {HttpHeaders.authorizationHeader: 'Client-ID $token'};
         print("---accesToken----$token---------");
       }
-      Uri uri = Uri.parse(_baseUrl + url);
+      Uri uri = Uri.parse(Constants.BASE_API_URL + url);
       final newURI = uri.replace(queryParameters: queryParams);
 //      final urlEncoded = Uri.encodeFull('$url/$path');
 //      var uri = Uri.http(_baseUrl, urlEncoded, queryParams);
@@ -54,7 +41,7 @@ class ApiClient {
   Future<T> post<T, K>(
       String url, bool isJsonBodyType, Map<String, dynamic> body,
       {dynamic queryParams}) async {
-    print('Api Post, url ${_baseUrl + url}');
+    print('Api Post, url ${Constants.BASE_API_URL + url}');
     var responseJson;
     try {
       String token = await SharedPreferencesHelper.getAccessToken();
@@ -86,10 +73,10 @@ class ApiClient {
           };
         }
 
-        response = await http.post(_baseUrl + url,
+        response = await http.post(Constants.BASE_API_URL + url,
             headers: headersJson, body: jsonBody);
       } else {
-        Uri uri = Uri.parse(_baseUrl + url);
+        Uri uri = Uri.parse(Constants.BASE_API_URL + url);
         final newURI = uri.replace(queryParameters: queryParams);
         print("------uri------$newURI------------");
         response = await http.post(newURI, body: body, headers: headers);
@@ -106,10 +93,11 @@ class ApiClient {
   }
 
   Future<T> patch<T, K>(String url, Map<String, dynamic> body) async {
-    print('Api Put, url ${_baseUrl + url}');
+    print('Api Put, url ${Constants.BASE_API_URL + url}');
     var responseJson;
     try {
-      final response = await http.patch(_baseUrl + url, body: body, headers: {
+      final response =
+          await http.patch(Constants.BASE_API_URL + url, body: body, headers: {
         HttpHeaders.authorizationHeader:
             'Bearer ${await SharedPreferencesHelper.getAccessToken()}'
       });
@@ -124,10 +112,11 @@ class ApiClient {
   }
 
   Future<T> put<T, K>(String url, Map<String, dynamic> body) async {
-    print('Api put, url ${_baseUrl + url}');
+    print('Api put, url ${Constants.BASE_API_URL + url}');
     var responseJson;
     try {
-      final response = await http.put(_baseUrl + url, body: body, headers: {
+      final response =
+          await http.put(Constants.BASE_API_URL + url, body: body, headers: {
         HttpHeaders.authorizationHeader:
             'Bearer ${await SharedPreferencesHelper.getAccessToken()}'
       });
@@ -142,10 +131,11 @@ class ApiClient {
   }
 
   Future<T> delete<T, K>(String url) async {
-    print('Api delete, url ${_baseUrl + url}');
+    print('Api delete, url ${Constants.BASE_API_URL + url}');
     var apiResponse;
     try {
-      final response = await http.delete(_baseUrl + url, headers: {
+      final response =
+          await http.delete(Constants.BASE_API_URL + url, headers: {
         HttpHeaders.authorizationHeader:
             'Bearer ${await SharedPreferencesHelper.getAccessToken()}'
       });
@@ -163,12 +153,6 @@ class ApiClient {
     print(responseJson);
     ApiResponse apiResponse = ApiResponse<T, K>();
     apiResponse = apiResponse.fromJson(responseJson);
-    if (apiResponse.message.contains("Your OTP")) {
-      List<String> otpList = apiResponse.message.split(".");
-      String otp = otpList[1];
-//      await SharedPreferencesHelper.setOtp(otp);
-      print("----------otp-----------$otp----------");
-    }
     switch (response.statusCode) {
       case 200:
         if (apiResponse.error != null) {

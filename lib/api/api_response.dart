@@ -1,3 +1,5 @@
+import 'package:screen_decor/models/photo_model.dart';
+
 /// if T data is List then K is the subtype
 class ApiResponse<T, K> {
   bool success;
@@ -12,13 +14,13 @@ class ApiResponse<T, K> {
     return "Success : $success \n Message : $message \n Data : $data \n Error: $error";
   }
 
-  ApiResponse fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    message = json['message'];
-    dynamic genericData = json['data'];
-    if (success) data = getDataFromJson<T, K>(genericData);
+  ApiResponse fromJson(dynamic json) {
+//    success = json['success'];
+//    message = json['message'];
+//    dynamic genericData = json['data'];
+    data = getDataFromJson<T, K>(json);
 //    data = getDataFromJson<T, K>(genericData);
-    error = json['error'];
+//    error = json['error'];
     return this;
   }
 
@@ -34,6 +36,8 @@ class ApiResponse<T, K> {
   static T getDataFromJson<T, K>(dynamic json) {
     if (json is Iterable) {
       return _fromJsonList<K>(json) as T;
+    } else if (T == PhotoModel) {
+      return PhotoModel.fromJson(json) as T;
     } else if (T == Null) {
       return null;
     } else {

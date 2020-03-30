@@ -6,7 +6,7 @@ import 'custom_colors.dart';
 
 class TextStyles {
   static final TextStyle h1Black = TextStyle(
-      color: Color(0xff181818),
+      color: Color(0xffffffff),
       fontFamily: 'Poppins-Bold',
       fontSize: 32,
       letterSpacing: 0);
