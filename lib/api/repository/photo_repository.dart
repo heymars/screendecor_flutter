@@ -1,3 +1,4 @@
+import 'package:screen_decor/models/collection_model.dart';
 import 'package:screen_decor/models/photo_model.dart';
 
 import '../api_client.dart';
@@ -16,6 +17,12 @@ class PhotoRepository {
   Future<List<PhotoModel>> getPhotos() async {
     return _apiClient.get<List<PhotoModel>, PhotoModel>(
       ApiClient.getPhotos,
+    );
+  }
+
+  Future<List<CollectionModel>> getCollection() async {
+    return _apiClient.get<List<CollectionModel>, CollectionModel>(
+      ApiClient.getCollection,
     );
   }
 }

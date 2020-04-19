@@ -10,6 +10,7 @@ import 'app_exceptions.dart';
 
 class ApiClient {
   static const String getPhotos = "/photos";
+  static const String getCollection = "/collections";
 
   Future<T> get<T, K>(String url, {dynamic queryParams}) async {
     print('Api Get, url ${Constants.BASE_API_URL + url}');

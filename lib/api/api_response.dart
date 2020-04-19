@@ -1,3 +1,4 @@
+import 'package:screen_decor/models/collection_model.dart';
 import 'package:screen_decor/models/photo_model.dart';
 
 /// if T data is List then K is the subtype
@@ -38,6 +39,8 @@ class ApiResponse<T, K> {
       return _fromJsonList<K>(json) as T;
     } else if (T == PhotoModel) {
       return PhotoModel.fromJson(json) as T;
+    } else if (T == CollectionModel) {
+      return CollectionModel.fromJson(json) as T;
     } else if (T == Null) {
       return null;
     } else {
