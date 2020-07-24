@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:screen_decor/ui/collection/collection_page.dart';
 
 import 'home/home_page.dart';
@@ -73,8 +74,8 @@ class _BottomNavigationBarControllerState
 //        }
       },
       currentIndex: selectedIndex,
-      selectedItemColor: Color(0xff5257f5),
-      type: BottomNavigationBarType.shifting,
+      selectedItemColor: Color(0xff000000),
+      type: BottomNavigationBarType.fixed,
       unselectedItemColor: Color(0xff9c9c9c),
       selectedLabelStyle: TextStyle(fontFamily: "Poppins-Bold", fontSize: 12),
       unselectedLabelStyle: TextStyle(fontFamily: "Poppins-Bold", fontSize: 12),
@@ -95,11 +96,14 @@ class _BottomNavigationBarControllerState
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.white),
+    );
     return Scaffold(
-        appBar: AppBar(
-          brightness: ThemeData.estimateBrightnessForColor(Colors.grey),
-          elevation: 0.0,
-        ),
+//        appBar: AppBar(
+//          brightness: ThemeData.estimateBrightnessForColor(Colors.grey),
+//          elevation: 0.0,
+//        ),
         body: PageStorage(
           child: pages[_selectedIndex],
           bucket: bucket,

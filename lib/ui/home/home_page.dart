@@ -7,7 +7,6 @@ import 'package:screen_decor/models/photo_model.dart';
 import 'package:screen_decor/ui/home/home_bloc.dart';
 import 'package:screen_decor/ui/home/home_event.dart';
 import 'package:screen_decor/ui/home/home_state.dart';
-import 'package:screen_decor/utils/TextStyles.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -30,11 +29,32 @@ class HomePageWidget extends StatefulWidget {
 
 class HomePageState extends State<HomePageWidget> {
   HomeBloc _bloc;
-  List<PhotoModel> list;
+  List<PhotoModel> list = [];
+  int page = 0;
+  bool isLoading = false;
+  ScrollController _scrollController = ScrollController();
+  Future _loadData() {
+    _bloc.dispatch(GetPhotos(page));
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void initState() {
     _bloc = BlocProvider.of<HomeBloc>(context);
-    _bloc.dispatch(GetPhotos());
+    _bloc.dispatch(GetPhotos(page));
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent -
+              _scrollController.position.pixels <=
+          200) {
+        print('------get more date-----');
+        _loadData();
+        setState(() {
+          isLoading = true;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -44,91 +64,106 @@ class HomePageState extends State<HomePageWidget> {
       listener: (context, state) {
         if (state is HomeStateSuccess) {
           setState(() {
-            list = state.photoModelList;
+            if (page == 1) {
+              list = state.photoModelList;
+            } else {
+              list = List.from(list)..addAll(state.photoModelList);
+            }
+            page = page + 1;
           });
+          print("-----list size--------${list.length}----$page-----");
         }
       },
       child: BlocBuilder(
         bloc: _bloc,
         builder: (BuildContext context, HomeState state) {
           return SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-//                decoration: BoxDecoration(
-//                  image: DecorationImage(
-//                    image: NetworkImage(
-//                        "https://i.pinimg.com/564x/b4/71/e3/b471e3cf440c2f772569912e32aa372b.jpg"),
-//                    fit: BoxFit.cover,
-//                  ),
-//                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Text(
-                      'Home',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Poppins-Bold',
-                          fontSize: 32,
-                          letterSpacing: 0),
-                    ),
-                    Text(
-                      'welcome to the ultimate weddings…',
-                      style: TextStyles.body2BlackMedium,
-                    ),
-                    Container(
-                        child: state is HomeStateSuccess
-                            ? getSubmitForParticipationRow(state.photoModelList)
-                            : Container()),
-                  ],
-                ),
-              ),
-            ),
-          );
+              child: list.isNotEmpty
+                  ? GridView.builder(
+                      controller: _scrollController,
+                      itemCount: list.length,
+                      shrinkWrap: false,
+                      padding: EdgeInsets.all(8),
+                      scrollDirection: Axis.vertical,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, childAspectRatio: 0.6),
+                      itemBuilder: (BuildContext context, int index) {
+                        return PhotoWidget(
+                          key: ObjectKey(list[index]),
+                          photoModel: list[index],
+                        );
+                      })
+                  : Container());
         },
       ),
     );
   }
 
   Widget getSubmitForParticipationRow(List<PhotoModel> photoModels) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            crossAxisSpacing: 8,
-            childAspectRatio: 0.65,
-            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
-            physics: NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            children: new List<Widget>.generate(photoModels.length, (index) {
-              return InkWell(
-                onTap: (() {}),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(6)),
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: Color(
-                                  (Random().nextDouble() * 0xFFFFFF).toInt() <<
-                                      0)
-                              .withOpacity(0.5),
-                        ),
-                        imageUrl: photoModels[index].urls.regular,
-                      )),
-                ),
-              );
-            }),
+    return Column(
+      children: <Widget>[
+//        GridView.count(
+//          controller: _scrollController,
+//          crossAxisCount: 2,
+//          shrinkWrap: true,
+//          crossAxisSpacing: 8,
+//          childAspectRatio: 0.65,
+//          physics: ScrollPhysics(),
+//          padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+//          scrollDirection: Axis.vertical,
+//          children: new List<Widget>.generate(photoModels.length, (index) {
+//            return InkWell(
+//              onTap: (() {}),
+//              child: Padding(
+//                padding: const EdgeInsets.only(top: 8.0),
+//                child: ClipRRect(
+//                    borderRadius: BorderRadius.all(Radius.circular(6)),
+//                    child: CachedNetworkImage(
+//                      fit: BoxFit.cover,
+//                      placeholder: (context, url) => Container(
+//                        color: Color(
+//                                (Random().nextDouble() * 0xFFFFFF).toInt() << 0)
+//                            .withOpacity(0.5),
+//                      ),
+//                      imageUrl: photoModels[index].urls.regular,
+//                    )),
+//              ),
+//            );
+//          }),
+//        ),
+
+        Container(
+          height: isLoading ? 50.0 : 0,
+          color: Colors.transparent,
+          child: Center(
+            child: new CircularProgressIndicator(),
           ),
-        ],
-      ),
+        ),
+      ],
+    );
+  }
+}
+
+class PhotoWidget extends StatelessWidget {
+  final PhotoModel photoModel;
+
+  const PhotoWidget({Key key, @required this.photoModel}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, left: 8),
+      child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+          child: CachedNetworkImage(
+            height: MediaQuery.of(context).size.height * 0.3,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => Container(
+              color: Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
+                  .withOpacity(0.5),
+            ),
+            imageUrl: photoModel.urls.regular,
+          )),
     );
   }
 }

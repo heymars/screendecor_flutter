@@ -14,7 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GetPhotos) {
       yield HomeStateLoading();
       try {
-        List<PhotoModel> list = await _photoRepository.getPhotos();
+        List<PhotoModel> list = await _photoRepository.getPhotos(event.page);
         if (list != null) {
           yield HomeStateSuccess(photoModelList: list);
         }

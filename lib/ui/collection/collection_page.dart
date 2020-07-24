@@ -50,28 +50,30 @@ class Collection extends State<CollectionWidget> {
       child: BlocBuilder(
         bloc: _collectionBloc,
         builder: (BuildContext context, CollectionState state) {
-          return Container(
-              height: MediaQuery.of(context).size.height,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 0.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Collections',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Poppins-Bold',
-                            fontSize: 32,
-                            letterSpacing: 0),
-                      ),
-                      getVoteForTheBestEntry(_list)
-                    ],
+          return SafeArea(
+            child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 0.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Collections',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Poppins-Bold',
+                              fontSize: 32,
+                              letterSpacing: 0),
+                        ),
+                        getVoteForTheBestEntry(_list)
+                      ],
+                    ),
                   ),
-                ),
-              ));
+                )),
+          );
         },
       ),
     );

@@ -1,5 +1,8 @@
 abstract class HomeEvent {}
 
 class GetPhotos extends HomeEvent {
-  GetPhotos();
+  final int page;
+  GetPhotos(
+    this.page,
+  );
 }
