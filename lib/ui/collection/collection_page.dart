@@ -9,6 +9,7 @@ import 'package:screen_decor/ui/collection/collection_state.dart';
 import 'package:screen_decor/utils/TextStyles.dart';
 
 class CollectionPage extends StatelessWidget {
+  const CollectionPage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

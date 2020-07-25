@@ -4,15 +4,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:screen_decor/models/photo_model.dart';
+import 'package:screen_decor/ui/detail/image_detail.dart';
 import 'package:screen_decor/ui/home/home_bloc.dart';
 import 'package:screen_decor/ui/home/home_event.dart';
 import 'package:screen_decor/ui/home/home_state.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text("Home"),
+          centerTitle: true,
+        ),
         body: BlocProvider(
           builder: (context) {
             return HomeBloc();
@@ -45,9 +51,8 @@ class HomePageState extends State<HomePageWidget> {
     _bloc = BlocProvider.of<HomeBloc>(context);
     _bloc.dispatch(GetPhotos(page));
     _scrollController.addListener(() {
-      if (_scrollController.position.maxScrollExtent -
-              _scrollController.position.pixels <=
-          200) {
+      if (_scrollController.position.maxScrollExtent ==
+          _scrollController.position.pixels) {
         print('------get more date-----');
         _loadData();
         setState(() {
@@ -83,7 +88,7 @@ class HomePageState extends State<HomePageWidget> {
                       controller: _scrollController,
                       itemCount: list.length,
                       shrinkWrap: false,
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.only(right: 8, top: 8, bottom: 8),
                       scrollDirection: Axis.vertical,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2, childAspectRatio: 0.6),
@@ -91,6 +96,12 @@ class HomePageState extends State<HomePageWidget> {
                         return PhotoWidget(
                           key: ObjectKey(list[index]),
                           photoModel: list[index],
+                          onItemClick: (() {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => ImageDetail(
+                                      photoModel: list[index],
+                                    )));
+                          }),
                         );
                       })
                   : Container());
@@ -146,24 +157,31 @@ class HomePageState extends State<HomePageWidget> {
 
 class PhotoWidget extends StatelessWidget {
   final PhotoModel photoModel;
-
-  const PhotoWidget({Key key, @required this.photoModel}) : super(key: key);
+  final Function onItemClick;
+  const PhotoWidget({Key key, @required this.photoModel, this.onItemClick})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, left: 8),
-      child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-          child: CachedNetworkImage(
-            height: MediaQuery.of(context).size.height * 0.3,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              color: Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-                  .withOpacity(0.5),
-            ),
-            imageUrl: photoModel.urls.regular,
-          )),
+    return GestureDetector(
+      onTap: onItemClick,
+      child: Hero(
+        tag: photoModel.id,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 8),
+          child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(6)),
+              child: CachedNetworkImage(
+                height: MediaQuery.of(context).size.height * 0.3,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
+                      .withOpacity(0.5),
+                ),
+                imageUrl: photoModel.urls.regular,
+              )),
+        ),
+      ),
     );
   }
 }
