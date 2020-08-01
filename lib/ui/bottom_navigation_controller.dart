@@ -18,25 +18,8 @@ class BottomNavigationBarController extends StatefulWidget {
 class _BottomNavigationBarControllerState
     extends State<BottomNavigationBarController>
     with SingleTickerProviderStateMixin {
-  final Key keyOne = PageStorageKey('pageOne');
-  final Key keyTwo = PageStorageKey('pageTwo');
-  final PageStorageBucket bucket = PageStorageBucket();
-  HomePage homePage;
-  CollectionPage collectionPage;
-  List<Widget> pages;
-  Widget currentPage;
-  int _selectedIndex = 0;
   @override
   void initState() {
-    homePage = HomePage(
-      key: keyOne,
-    );
-    collectionPage = CollectionPage(key: keyTwo);
-    collectionPage = CollectionPage(
-      key: keyTwo,
-    );
-    pages = [homePage, collectionPage, collectionPage];
-    currentPage = homePage;
     super.initState();
   }
 
@@ -67,11 +50,32 @@ class _BottomNavigationBarControllerState
         )),
   ];
 
+  final List<Widget> pages = [
+    HomePage(
+      key: PageStorageKey('Page1'),
+    ),
+    CollectionPage(
+      key: PageStorageKey('Page2'),
+    ),
+    CollectionPage(
+      key: PageStorageKey('Page2'),
+    ),
+  ];
+
+  final PageStorageBucket bucket = PageStorageBucket();
+
+  int _selectedIndex = 0;
+
   Widget _bottomNavigationBar(int selectedIndex) => BottomNavigationBar(
       onTap: (int index) {
+//        if (index == 2) {
+//          Navigator.of(context).push(MaterialPageRoute(
+//              builder: (context) => CartPage(
+//                    productRepository: ProductRepository(),
+//                  )));
+//        } else {
         setState(() {
           _selectedIndex = index;
-          currentPage = pages[index];
         });
 //        }
       },
@@ -107,7 +111,7 @@ class _BottomNavigationBarControllerState
 //          elevation: 0.0,
 //        ),
         body: PageStorage(
-          child: currentPage,
+          child: pages[_selectedIndex],
           bucket: bucket,
         ),
         bottomNavigationBar: _bottomNavigationBar(_selectedIndex));

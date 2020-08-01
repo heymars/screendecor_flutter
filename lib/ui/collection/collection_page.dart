@@ -24,6 +24,7 @@ class CollectionPage extends StatelessWidget {
 }
 
 class CollectionWidget extends StatefulWidget {
+  const CollectionWidget({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => Collection();
 }

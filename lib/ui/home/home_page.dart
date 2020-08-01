@@ -29,17 +29,21 @@ class HomePage extends StatelessWidget {
 }
 
 class HomePageWidget extends StatefulWidget {
+  const HomePageWidget({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePageWidget> {
+class HomePageState extends State<HomePageWidget>
+    with AutomaticKeepAliveClientMixin {
   HomeBloc _bloc;
   List<PhotoModel> list = [];
   int page = 0;
   bool isLoading = false;
+  var myVariable = 0;
   ScrollController _scrollController = ScrollController();
-  Future _loadData() {
+
+  void _loadData() {
     _bloc.dispatch(GetPhotos(page));
     setState(() {
       isLoading = false;
@@ -48,11 +52,13 @@ class HomePageState extends State<HomePageWidget> {
 
   @override
   void initState() {
+    super.initState();
     _bloc = BlocProvider.of<HomeBloc>(context);
     _bloc.dispatch(GetPhotos(page));
     _scrollController.addListener(() {
-      if (_scrollController.position.maxScrollExtent ==
-          _scrollController.position.pixels) {
+      if (_scrollController.position.maxScrollExtent -
+              _scrollController.position.pixels <=
+          200) {
         print('------get more date-----');
         _loadData();
         setState(() {
@@ -60,11 +66,11 @@ class HomePageState extends State<HomePageWidget> {
         });
       }
     });
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    myVariable = myVariable + 1;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeStateSuccess) {
@@ -110,49 +116,8 @@ class HomePageState extends State<HomePageWidget> {
     );
   }
 
-  Widget getSubmitForParticipationRow(List<PhotoModel> photoModels) {
-    return Column(
-      children: <Widget>[
-//        GridView.count(
-//          controller: _scrollController,
-//          crossAxisCount: 2,
-//          shrinkWrap: true,
-//          crossAxisSpacing: 8,
-//          childAspectRatio: 0.65,
-//          physics: ScrollPhysics(),
-//          padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
-//          scrollDirection: Axis.vertical,
-//          children: new List<Widget>.generate(photoModels.length, (index) {
-//            return InkWell(
-//              onTap: (() {}),
-//              child: Padding(
-//                padding: const EdgeInsets.only(top: 8.0),
-//                child: ClipRRect(
-//                    borderRadius: BorderRadius.all(Radius.circular(6)),
-//                    child: CachedNetworkImage(
-//                      fit: BoxFit.cover,
-//                      placeholder: (context, url) => Container(
-//                        color: Color(
-//                                (Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-//                            .withOpacity(0.5),
-//                      ),
-//                      imageUrl: photoModels[index].urls.regular,
-//                    )),
-//              ),
-//            );
-//          }),
-//        ),
-
-        Container(
-          height: isLoading ? 50.0 : 0,
-          color: Colors.transparent,
-          child: Center(
-            child: new CircularProgressIndicator(),
-          ),
-        ),
-      ],
-    );
-  }
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class PhotoWidget extends StatelessWidget {
